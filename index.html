@@ -1,41 +1,1166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Pearl — A Guide to Oysters</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pearl — A Guide to Oysters</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #12201e;
+  --cream: #f4efe6;
+  --warm: #ece5d6;
+  --ocean: #1e4d5a;
+  --deep: #0d2f38;
+  --sand: #c9b89a;
+  --gold: #a07830;
+  --pearl: #e8dfd0;
+  --mist: rgba(30,77,90,0.06);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom Cursor */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--ocean);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+  mix-blend-mode: multiply;
+}
+.cursor-ring {
+  width: 30px; height: 30px;
+  border: 1px solid var(--ocean);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.4s ease, width 0.3s ease, height 0.3s ease;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* Grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+}
+nav.scrolled {
+  background: rgba(244,239,230,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.nav-logo {
+  font-size: 1.4rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ocean);
+  letter-spacing: 0.05em;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.nav-links a:hover { opacity: 1; }
+
+/* ─── HERO ─── */
+#hero {
+  height: 100vh;
+  background: var(--deep);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 5rem 5rem 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(30,77,90,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 80%, rgba(160,120,48,0.12) 0%, transparent 50%),
+    linear-gradient(160deg, #0d2f38 0%, #142830 50%, #0a2028 100%);
+}
+
+.hero-lines {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.hero-lines::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: 40%;
+  width: 1px; height: 200%;
+  background: linear-gradient(to bottom, transparent, rgba(201,184,154,0.15) 40%, rgba(201,184,154,0.15) 60%, transparent);
+  transform: rotate(12deg);
+}
+.hero-lines::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: 60%;
+  width: 1px; height: 200%;
+  background: linear-gradient(to bottom, transparent, rgba(201,184,154,0.08) 40%, rgba(201,184,154,0.08) 60%, transparent);
+  transform: rotate(12deg);
+}
+
+.hero-tag {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--sand);
+  opacity: 0.7;
+  margin-bottom: 1.5rem;
+  position: relative;
+  animation: fadeUp 1s 0.2s both;
+}
+
+.hero-title {
+  font-size: clamp(4rem, 11vw, 9rem);
+  font-weight: 300;
+  line-height: 0.88;
+  color: var(--cream);
+  position: relative;
+  animation: fadeUp 1s 0.4s both;
+}
+.hero-title em {
+  color: var(--sand);
+  font-style: italic;
+  display: block;
+}
+
+.hero-subtitle {
+  margin-top: 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: rgba(201,184,154,0.75);
+  max-width: 420px;
+  line-height: 1.7;
+  font-style: italic;
+  position: relative;
+  animation: fadeUp 1s 0.6s both;
+}
+
+.hero-cta {
+  margin-top: 3rem;
+  position: relative;
+  animation: fadeUp 1s 0.8s both;
+}
+.hero-cta a {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--sand);
+  text-decoration: none;
+  border: 1px solid rgba(201,184,154,0.3);
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+}
+.hero-cta a:hover {
+  background: rgba(201,184,154,0.08);
+  border-color: var(--sand);
+}
+
+.hero-scroll {
+  position: absolute;
+  right: 3rem;
+  bottom: 3rem;
+  writing-mode: vertical-rl;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(201,184,154,0.4);
+  animation: pulse 3s ease infinite;
+}
+
+/* ─── INTRO BAND ─── */
+#intro {
+  background: var(--ocean);
+  color: var(--cream);
+  padding: 5rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+.intro-quote {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--cream);
+}
+.intro-quote cite {
+  display: block;
+  font-style: normal;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sand);
+  margin-top: 1.5rem;
+  opacity: 0.7;
+}
+.intro-text {
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: rgba(244,239,230,0.75);
+  font-weight: 300;
+}
+.intro-text p + p { margin-top: 1rem; }
+.intro-text strong { color: var(--sand); font-weight: 400; }
+
+/* ─── MERROIR ─── */
+#merroir {
+  padding: 7rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 6rem;
+  align-items: start;
+}
+.sticky-label {
+  position: sticky;
+  top: 6rem;
+}
+.section-eyebrow {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.section-title {
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ocean);
+}
+.section-title em { font-style: italic; }
+.section-rule {
+  width: 40px; height: 1px;
+  background: var(--gold);
+  margin: 2rem 0;
+}
+.section-desc {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: #4a3f30;
+  font-weight: 300;
+}
+
+.merroir-factors {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.factor {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  transition: background 0.3s;
+}
+.factor:first-child { border-top: 1px solid rgba(0,0,0,0.08); }
+.factor-num {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  padding-top: 0.3rem;
+}
+.factor-title {
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--ocean);
+  margin-bottom: 0.5rem;
+}
+.factor-desc {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #4a3f30;
+  font-weight: 300;
+}
+
+/* ─── OYSTERS ─── */
+#oysters {
+  background: var(--deep);
+  padding: 7rem 5rem;
+}
+#oysters .section-eyebrow { color: var(--sand); }
+#oysters .section-title { color: var(--cream); }
+#oysters .section-rule { background: var(--sand); }
+
+.oyster-intro-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+}
+.oyster-intro-bar .section-desc {
+  color: rgba(244,239,230,0.55);
+  max-width: 380px;
+}
+
+.oyster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.oyster-item {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: grid;
+  grid-template-columns: 3rem 1fr 1fr auto;
+  gap: 3rem;
+  align-items: center;
+  padding: 2.5rem 0;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+}
+.oyster-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.02);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.oyster-item:hover::after { opacity: 1; }
+.oyster-item:last-child { border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+.oyster-item-num {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: rgba(201,184,154,0.4);
+}
+
+.oyster-item-name {
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--cream);
+  transition: color 0.3s;
+}
+.oyster-item:hover .oyster-item-name { color: var(--sand); }
+
+.oyster-item-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.oyster-item-region {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sand);
+  opacity: 0.6;
+}
+.oyster-item-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.tag-sm {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(201,184,154,0.25);
+  color: rgba(201,184,154,0.6);
+}
+
+.oyster-item-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 160px;
+}
+.mini-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.mini-bar-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: rgba(201,184,154,0.5);
+  width: 55px;
+  text-transform: uppercase;
+}
+.mini-track {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+.mini-fill {
+  height: 100%;
+  background: var(--sand);
+  opacity: 0.7;
+  transition: width 1.5s ease;
+}
+
+/* expanded card */
+.oyster-expanded {
+  display: none;
+  grid-column: 1 / -1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 2.5rem;
+  margin: -1rem 0 1rem;
+  animation: expandDown 0.4s ease both;
+}
+.oyster-expanded.open { display: block; }
+.oyster-expanded p {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: rgba(244,239,230,0.65);
+  font-weight: 300;
+  max-width: 680px;
+}
+.oyster-expanded .pairing-tip {
+  margin-top: 1.5rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sand);
+  opacity: 0.7;
+}
+
+/* ─── HOW TO EAT ─── */
+#how {
+  padding: 7rem 5rem;
+  background: var(--warm);
+}
+.steps-grid {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.step {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid rgba(0,0,0,0.08);
+  transition: background 0.3s;
+}
+.step:last-child { border-right: none; }
+.step:hover { background: rgba(30,77,90,0.04); }
+.step-num {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.step-title {
+  font-size: 1.6rem;
+  font-style: italic;
+  color: var(--ocean);
+  margin-bottom: 1rem;
+}
+.step-desc {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #4a3f30;
+  font-weight: 300;
+}
+
+/* ─── PAIRINGS ─── */
+#pairings {
+  background: var(--ocean);
+  padding: 7rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+#pairings::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+#pairings::after {
+  content: '';
+  position: absolute;
+  bottom: -150px; left: -150px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+#pairings .section-eyebrow { color: var(--sand); }
+#pairings .section-title { color: var(--cream); }
+#pairings .section-rule { background: var(--sand); }
+
+.pairings-grid {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.pairing-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 2.5rem;
+  transition: all 0.3s ease;
+}
+.pairing-card:hover {
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.pairing-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
+.pairing-drink {
+  font-size: 1.5rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+.pairing-type {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sand);
+  opacity: 0.6;
+  margin-bottom: 1.2rem;
+}
+.pairing-note {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: rgba(244,239,230,0.55);
+  font-weight: 300;
+}
+.pairing-match {
+  margin-top: 1.5rem;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sand);
+  opacity: 0.5;
+}
+.pairing-match span { opacity: 1; color: var(--sand); }
+
+/* ─── GLOSSARY ─── */
+#glossary {
+  padding: 7rem 5rem;
+}
+.glossary-grid {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+}
+.gloss-item {
+  padding: 2rem 3rem 2rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 2rem;
+}
+.gloss-item:nth-child(even) {
+  padding: 2rem 0 2rem 3rem;
+  border-left: 1px solid rgba(0,0,0,0.07);
+}
+.gloss-term {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--ocean);
+  align-self: start;
+}
+.gloss-def {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #4a3f30;
+  font-weight: 300;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--deep);
+  color: var(--cream);
+  padding: 5rem 5rem 3rem;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 2rem;
+}
+.footer-brand {
+  font-size: 2rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--cream);
+}
+.footer-brand span { color: var(--sand); }
+.footer-tagline {
+  font-size: 0.9rem;
+  color: rgba(244,239,230,0.4);
+  font-weight: 300;
+  margin-top: 0.75rem;
+  line-height: 1.6;
+}
+.footer-col h4 {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--sand);
+  opacity: 0.6;
+  margin-bottom: 1.5rem;
+}
+.footer-col ul { list-style: none; }
+.footer-col li {
+  font-size: 0.95rem;
+  color: rgba(244,239,230,0.5);
+  margin-bottom: 0.75rem;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.footer-col li:hover { color: var(--cream); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-copy {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(244,239,230,0.25);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes expandDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav { padding: 1.2rem 2rem; }
+  .nav-links { display: none; }
+  #hero { padding: 4rem 2rem 5rem; }
+  #intro { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 2rem; }
+  #merroir { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 2rem; }
+  #oysters { padding: 4rem 2rem; }
+  .oyster-item { grid-template-columns: 2rem 1fr; }
+  .oyster-item-meta, .oyster-item-bars { display: none; }
+  #how { padding: 4rem 2rem; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .step { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  #pairings { padding: 4rem 2rem; }
+  .pairings-grid { grid-template-columns: 1fr; }
+  #glossary { padding: 4rem 2rem; }
+  .glossary-grid { grid-template-columns: 1fr; }
+  .gloss-item:nth-child(even) { padding: 2rem 0; border-left: none; }
+  footer { padding: 4rem 2rem 2rem; }
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  .oyster-intro-bar { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>The Pearl</h1>
-        <h2>A Guide to Oysters</h2>
-    </header>
-    <main>
-        <section id="introduction">
-            <h3>Introduction</h3>
-            <p>Welcome to the ultimate guide to oysters! Discover the beauty and culinary delight of these amazing shellfish.</p>
-        </section>
-        <section id="types">
-            <h3>Types of Oysters</h3>
-            <ul>
-                <li>Atlantic Oysters</li>
-                <li>Pacific Oysters</li>
-                <li>European Flat Oysters</li>
-            </ul>
-        </section>
-        <section id="preparation">
-            <h3>Preparation Methods</h3>
-            <p>Learn how to properly prepare oysters for eating.</p>
-        </section>
-        <section id="recipes">
-            <h3>Oyster Recipes</h3>
-            <p>Try out these delicious oyster recipes!</p>
-        </section>
-    </main>
-    <footer>
-        <p>© 2026 The Pearl. All rights reserved.</p>
-    </footer>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">The <span>Pearl</span></div>
+  <ul class="nav-links">
+    <li><a href="#merroir">Merroir</a></li>
+    <li><a href="#oysters">Varieties</a></li>
+    <li><a href="#how">How to Eat</a></li>
+    <li><a href="#pairings">Pairings</a></li>
+    <li><a href="#glossary">Glossary</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-tag">A Complete Guide to the World's Finest Bivalves</div>
+  <h1 class="hero-title">The Art<br>of the<br><em>Oyster.</em></h1>
+  <p class="hero-subtitle">From the icy shores of Brittany to the sun-warmed bays of the Pacific — understanding what makes each oyster unique.</p>
+  <div class="hero-cta">
+    <a href="#merroir">Begin the Journey →</a>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<!-- INTRO BAND -->
+<section id="intro">
+  <blockquote class="intro-quote">
+    "The world is your oyster" — but first, you must know which oyster you're after.
+    <cite>— On the art of merroir</cite>
+  </blockquote>
+  <div class="intro-text">
+    <p>Oysters are among the oldest foods in human history. Coastal peoples have harvested them for <strong>tens of thousands of years</strong> — their shell middens rising like monuments along ancient shores.</p>
+    <p>Today, oysters occupy a rare position in our food culture: simultaneously a <strong>humble peasant food</strong> and the apex of fine dining. They are eaten raw, roasted, grilled, and stewed — but it's the raw oyster, slipped from its shell with a squeeze of lemon, that reveals the true soul of the sea.</p>
+    <p>This guide is your introduction to the world of oysters — their varieties, their flavors, and the vocabulary to talk about them.</p>
+  </div>
+</section>
+
+<!-- MERROIR -->
+<section id="merroir">
+  <div class="sticky-label reveal">
+    <p class="section-eyebrow">The Concept</p>
+    <h2 class="section-title">What is<br><em>Merroir?</em></h2>
+    <div class="section-rule"></div>
+    <p class="section-desc">Borrowed from wine's concept of "terroir," merroir describes how an oyster's environment shapes its flavor. The same species, grown in different waters, will taste completely different.</p>
+  </div>
+  <div class="merroir-factors reveal">
+    <div class="factor">
+      <div class="factor-num">01</div>
+      <div>
+        <div class="factor-title">Salinity</div>
+        <p class="factor-desc">The salt content of the water directly shapes how briny an oyster tastes. High-salinity waters near open ocean produce intensely saline oysters. Estuaries, where freshwater rivers meet the sea, yield milder, sweeter bivalves.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-num">02</div>
+      <div>
+        <div class="factor-title">Temperature</div>
+        <p class="factor-desc">Cold water slows an oyster's metabolism, leading to denser, crisper meat. Warmer southern waters produce larger, softer oysters. This is why winter oysters are often considered superior — they've had months to firm up.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-num">03</div>
+      <div>
+        <div class="factor-title">Diet & Phytoplankton</div>
+        <p class="factor-desc">Oysters filter hundreds of liters of water per day, feeding on algae and phytoplankton. The unique blend of microorganisms in each body of water imparts subtle flavors — that faint cucumber note, the grassy finish, the buttery richness.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-num">04</div>
+      <div>
+        <div class="factor-title">Cultivation Method</div>
+        <p class="factor-desc">Wild oysters develop irregular shapes clinging to rocks. Cage-raised oysters are tumbled regularly, creating deep cups and consistent shell shapes. Bottom culture, rack culture, and long-line farming each produce distinct textures and flavors.</p>
+      </div>
+    </div>
+    <div class="factor">
+      <div class="factor-num">05</div>
+      <div>
+        <div class="factor-title">Mineral Composition</div>
+        <p class="factor-desc">The geology of the seabed and surrounding land influences mineral content. Copper-rich waters produce oysters with a distinctly metallic finish. Clay-bottomed estuaries yield earthier notes. Granite coastlines lend a clean, crisp minerality.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OYSTER VARIETIES -->
+<section id="oysters">
+  <div class="oyster-intro-bar">
+    <div>
+      <p class="section-eyebrow">The Varieties</p>
+      <h2 class="section-title" style="color:var(--cream);">Five Oysters<br><em>Worth Knowing</em></h2>
+    </div>
+    <p class="section-desc" style="color:rgba(244,239,230,0.45); max-width:350px; font-size:0.95rem;">Click any row to explore the full flavor profile and tasting notes.</p>
+  </div>
+
+  <div class="oyster-list">
+
+    <div class="oyster-item" onclick="toggleOyster(this)">
+      <div class="oyster-item-num">01</div>
+      <div class="oyster-item-name">Eastern Oyster</div>
+      <div class="oyster-item-meta">
+        <div class="oyster-item-region">Crassostrea virginica · East Coast, USA</div>
+        <div class="oyster-item-tags">
+          <span class="tag-sm">Briny</span>
+          <span class="tag-sm">Mineral</span>
+          <span class="tag-sm">Oceanic</span>
+        </div>
+      </div>
+      <div class="oyster-item-bars">
+        <div class="mini-bar-row"><span class="mini-bar-label">Salt</span><div class="mini-track"><div class="mini-fill" style="width:85%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Sweet</span><div class="mini-track"><div class="mini-fill" style="width:30%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Creamy</span><div class="mini-track"><div class="mini-fill" style="width:45%"></div></div></div>
+      </div>
+      <div class="oyster-expanded">
+        <p>The workhorse of the American oyster world and perhaps the most widely consumed species on the planet. Found from Maine to the Gulf of Mexico, the Eastern oyster's flavor varies wildly by location — a Wellfleet from Cape Cod is intensely briny and firm with a clean metallic finish, while a Chesapeake Bay oyster is milder, earthier, and slightly sweet. The Blue Point, harvested from Long Island, was reportedly Abraham Lincoln's favorite and helped establish the oyster as an American delicacy.</p>
+        <div class="pairing-tip">Best with → Champagne · Muscadet · Mignonette</div>
+      </div>
+    </div>
+
+    <div class="oyster-item" onclick="toggleOyster(this)">
+      <div class="oyster-item-num">02</div>
+      <div class="oyster-item-name">Pacific Oyster</div>
+      <div class="oyster-item-meta">
+        <div class="oyster-item-region">Crassostrea gigas · Pacific Northwest & Japan</div>
+        <div class="oyster-item-tags">
+          <span class="tag-sm">Sweet</span>
+          <span class="tag-sm">Buttery</span>
+          <span class="tag-sm">Melon</span>
+        </div>
+      </div>
+      <div class="oyster-item-bars">
+        <div class="mini-bar-row"><span class="mini-bar-label">Salt</span><div class="mini-track"><div class="mini-fill" style="width:40%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Sweet</span><div class="mini-track"><div class="mini-fill" style="width:80%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Creamy</span><div class="mini-track"><div class="mini-fill" style="width:70%"></div></div></div>
+      </div>
+      <div class="oyster-expanded">
+        <p>The most widely farmed oyster in the world, originally from Japan and now cultivated across the Pacific Northwest, France, Australia, and beyond. Pacific oysters are characteristically sweet, mild, and buttery with a fruity melon-like finish and a soft, plump texture. The Hama Hama from Hood Canal in Washington state is beloved for its cucumber and grass notes, while French-farmed Pacific oysters develop creamier, more complex profiles. Their larger size and milder brine make them approachable for newcomers.</p>
+        <div class="pairing-tip">Best with → Chablis · Sake · Dry Riesling</div>
+      </div>
+    </div>
+
+    <div class="oyster-item" onclick="toggleOyster(this)">
+      <div class="oyster-item-num">03</div>
+      <div class="oyster-item-name">European Flat</div>
+      <div class="oyster-item-meta">
+        <div class="oyster-item-region">Ostrea edulis · France, Ireland & UK</div>
+        <div class="oyster-item-tags">
+          <span class="tag-sm">Metallic</span>
+          <span class="tag-sm">Nutty</span>
+          <span class="tag-sm">Intense</span>
+        </div>
+      </div>
+      <div class="oyster-item-bars">
+        <div class="mini-bar-row"><span class="mini-bar-label">Salt</span><div class="mini-track"><div class="mini-fill" style="width:60%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Sweet</span><div class="mini-track"><div class="mini-fill" style="width:25%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Creamy</span><div class="mini-track"><div class="mini-fill" style="width:55%"></div></div></div>
+      </div>
+      <div class="oyster-expanded">
+        <p>The aristocrat of the oyster world. Round, flat-shelled, and intensely complex — the European Flat is not for the uninitiated. Its flavor is pronounced and lingering: deeply metallic, with a nutty, almost iodine-like richness that experts call "flinty." The Belon of Brittany is the most celebrated, with a copper-penny finish that divides opinion sharply. Galway natives, from the cold waters of Ireland, are slightly milder but no less complex. These oysters demand attention and reward patience.</p>
+        <div class="pairing-tip">Best with → Guinness · Muscadet · Aged Chablis</div>
+      </div>
+    </div>
+
+    <div class="oyster-item" onclick="toggleOyster(this)">
+      <div class="oyster-item-num">04</div>
+      <div class="oyster-item-name">Kumamoto</div>
+      <div class="oyster-item-meta">
+        <div class="oyster-item-region">Crassostrea sikamea · Japan & Pacific Coast</div>
+        <div class="oyster-item-tags">
+          <span class="tag-sm">Mild</span>
+          <span class="tag-sm">Creamy</span>
+          <span class="tag-sm">Cucumber</span>
+        </div>
+      </div>
+      <div class="oyster-item-bars">
+        <div class="mini-bar-row"><span class="mini-bar-label">Salt</span><div class="mini-track"><div class="mini-fill" style="width:25%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Sweet</span><div class="mini-track"><div class="mini-fill" style="width:75%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Creamy</span><div class="mini-track"><div class="mini-fill" style="width:90%"></div></div></div>
+      </div>
+      <div class="oyster-expanded">
+        <p>The gateway oyster — and a crowd-pleaser even among seasoned enthusiasts. Originally from Kumamoto Prefecture in Japan, this small, deep-cupped oyster is remarkably sweet with a mild brine and a lush, creamy texture. Notes of cucumber, melon, and fresh cream define its profile, with almost no aggressive salinity to overwhelm the palate. Its deep cup retains liquor beautifully, making each bite a complete experience. If you're new to oysters, start here — the Kumamoto will convert you.</p>
+        <div class="pairing-tip">Best with → Champagne · Dry Martini · Light Sake</div>
+      </div>
+    </div>
+
+    <div class="oyster-item" onclick="toggleOyster(this)">
+      <div class="oyster-item-num">05</div>
+      <div class="oyster-item-name">Olympia</div>
+      <div class="oyster-item-meta">
+        <div class="oyster-item-region">Ostrea lurida · Pacific Northwest, USA</div>
+        <div class="oyster-item-tags">
+          <span class="tag-sm">Peppery</span>
+          <span class="tag-sm">Celery</span>
+          <span class="tag-sm">Earthy</span>
+        </div>
+      </div>
+      <div class="oyster-item-bars">
+        <div class="mini-bar-row"><span class="mini-bar-label">Salt</span><div class="mini-track"><div class="mini-fill" style="width:50%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Sweet</span><div class="mini-track"><div class="mini-fill" style="width:40%"></div></div></div>
+        <div class="mini-bar-row"><span class="mini-bar-label">Creamy</span><div class="mini-track"><div class="mini-fill" style="width:60%"></div></div></div>
+      </div>
+      <div class="oyster-expanded">
+        <p>America's only native Pacific oyster, and one of the most storied bivalves in the world. Nearly hunted to extinction by overharvesting in the 19th century, the Olympia has made a slow, remarkable comeback along the Pacific Northwest coast. Tiny — rarely larger than a quarter — yet intensely complex. Their flavor is unmistakably wild: a distinctive celery and anise finish, a peppery bite, and an earthy depth that speaks to centuries of Pacific Northwest ecology. Finding them on a menu is a rare privilege.</p>
+        <div class="pairing-tip">Best with → Dry Vermouth · Picpoul · Cold IPA</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW TO EAT -->
+<section id="how">
+  <p class="section-eyebrow reveal">The Ritual</p>
+  <h2 class="section-title reveal">How to Eat<br><em>an Oyster</em></h2>
+  <div class="section-rule reveal"></div>
+
+  <div class="steps-grid">
+    <div class="step reveal">
+      <div class="step-num">Step 01</div>
+      <div class="step-title">Inspect It</div>
+      <p class="step-desc">A fresh oyster should smell of the sea — clean, oceanic, and briny. Never fishy or sulfurous. The shell should be tightly closed or snap shut when tapped. If it smells off, trust your nose.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Step 02</div>
+      <div class="step-title">Drink the Liquor</div>
+      <p class="step-desc">Before adding anything, sip the natural juice from the shell. This "liquor" is the pure expression of the oyster's merroir — salinity, minerality, and sweetness at their most honest.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Step 03</div>
+      <div class="step-title">Loosen & Taste</div>
+      <p class="step-desc">Use a small fork to loosen the oyster from its shell. Tip it into your mouth, chew two or three times, and let it linger. Resist the urge to simply swallow — the finish is where the magic lives.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Step 04</div>
+      <div class="step-title">Dress Sparingly</div>
+      <p class="step-desc">A few drops of lemon, a tiny spoon of mignonette, or a dash of Tabasco. These accent the oyster — they should never dominate it. Less is always more. Skip cocktail sauce entirely.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAIRINGS -->
+<section id="pairings">
+  <p class="section-eyebrow reveal">At the Table</p>
+  <h2 class="section-title reveal">The Perfect<br><em>Pairing</em></h2>
+  <div class="section-rule reveal" style="background:var(--sand);"></div>
+
+  <div class="pairings-grid">
+    <div class="pairing-card reveal">
+      <div class="pairing-icon">🥂</div>
+      <div class="pairing-drink">Champagne</div>
+      <div class="pairing-type">Sparkling Wine</div>
+      <p class="pairing-note">The classic pairing for a reason. High acidity and fine bubbles cleanse the palate between bites, while yeasty, toasty notes complement the oyster's brine without overpowering it.</p>
+      <div class="pairing-match">Best with → <span>Eastern · Kumamoto</span></div>
+    </div>
+    <div class="pairing-card reveal">
+      <div class="pairing-icon">🍷</div>
+      <div class="pairing-drink">Muscadet</div>
+      <div class="pairing-type">White Wine, Loire Valley</div>
+      <p class="pairing-note">The people's champion of oyster pairings. Bone dry, searingly acidic, and slightly saline itself — Muscadet sur lie is like the sea in a glass. An almost unfair match for briny Atlantic oysters.</p>
+      <div class="pairing-match">Best with → <span>Eastern · European Flat</span></div>
+    </div>
+    <div class="pairing-card reveal">
+      <div class="pairing-icon">🍺</div>
+      <div class="pairing-drink">Dry Stout</div>
+      <div class="pairing-type">Beer, Irish Style</div>
+      <p class="pairing-note">Guinness and oysters is a tradition in Ireland for good reason. Roasted malt bitterness contrasts beautifully with the oyster's brine, creating a combination that is greater than the sum of its parts.</p>
+      <div class="pairing-match">Best with → <span>European Flat · Olympia</span></div>
+    </div>
+    <div class="pairing-card reveal">
+      <div class="pairing-icon">🍸</div>
+      <div class="pairing-drink">Dry Martini</div>
+      <div class="pairing-type">Cocktail</div>
+      <p class="pairing-note">Briny, cold, and severe — the Martini is the oyster of cocktails. A classic ratio gin martini with a lemon twist mirrors the ocean minerality of a Kumamoto or a Wellfleet with quiet elegance.</p>
+      <div class="pairing-match">Best with → <span>Kumamoto · Eastern</span></div>
+    </div>
+    <div class="pairing-card reveal">
+      <div class="pairing-icon">🌸</div>
+      <div class="pairing-drink">Junmai Sake</div>
+      <div class="pairing-type">Japanese Rice Wine</div>
+      <p class="pairing-note">Umami calls to umami. A dry Junmai sake enhances the sweet, oceanic depth of Pacific oysters without adding acidity, making it the ideal partner for Kumamotos or Hama Hamas.</p>
+      <div class="pairing-match">Best with → <span>Pacific · Kumamoto</span></div>
+    </div>
+    <div class="pairing-card reveal">
+      <div class="pairing-icon">🍋</div>
+      <div class="pairing-drink">Chablis</div>
+      <div class="pairing-type">White Burgundy, France</div>
+      <p class="pairing-note">Premier Cru Chablis carries a distinctive flinty, oyster-shell minerality — so called because its vines literally grow in ancient oyster fossil beds. The pairing feels almost geological in its rightness.</p>
+      <div class="pairing-match">Best with → <span>Pacific · European Flat</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section id="glossary">
+  <p class="section-eyebrow reveal">The Language</p>
+  <h2 class="section-title reveal">Oyster<br><em>Glossary</em></h2>
+  <div class="section-rule reveal"></div>
+
+  <div class="glossary-grid">
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Merroir</div>
+      <p class="gloss-def">The marine equivalent of terroir — the sum of environmental factors (salinity, temperature, diet, geology) that shape an oyster's unique flavor profile.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Liquor</div>
+      <p class="gloss-def">The natural seawater retained inside the shell. Drinking the liquor before eating the oyster gives you the purest expression of its merroir.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Brine</div>
+      <p class="gloss-def">The saltiness of an oyster, which derives from the salinity of the water it grew in. Atlantic oysters are typically brinier than Pacific varieties.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Mignonette</div>
+      <p class="gloss-def">The classic French condiment for raw oysters: minced shallots macerated in red wine vinegar, sometimes seasoned with cracked black pepper.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Flat</div>
+      <p class="gloss-def">An oyster that has dried out or is no longer alive. A flat oyster has lost its liquor and will have a dull, lifeless appearance. Always discard these.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Midden</div>
+      <p class="gloss-def">An ancient refuse heap, often found along coastlines, consisting largely of oyster shells — evidence that humans have eaten oysters for over 100,000 years.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Tumbling</div>
+      <p class="gloss-def">A cultivation technique where oysters in cages are regularly agitated, causing shell edges to break and regrow, resulting in deep cups and more consistent shapes.</p>
+    </div>
+    <div class="gloss-item reveal">
+      <div class="gloss-term">Finish</div>
+      <p class="gloss-def">The lingering flavor an oyster leaves after swallowing — the most telling indicator of quality and provenance. Can be sweet, metallic, grassy, briny, or creamy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">The <span>Pearl</span></div>
+      <p class="footer-tagline">A connoisseur's guide to the world's finest bivalves. From merroir to mignonette — everything you need to appreciate the art of the oyster.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li>What is Merroir?</li>
+        <li>The Five Varieties</li>
+        <li>How to Eat an Oyster</li>
+        <li>Perfect Pairings</li>
+        <li>Oyster Glossary</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>The Oysters</h4>
+      <ul>
+        <li>Eastern Oyster</li>
+        <li>Pacific Oyster</li>
+        <li>European Flat</li>
+        <li>Kumamoto</li>
+        <li>Olympia</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© The Pearl — A Guide to Oysters</div>
+    <div class="footer-copy">Built with care & a love of merroir</div>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) *.12;
+  ring.style.transform = `translate(${rx - 15}px, ${ry - 15}px)`;
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), 100);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// Oyster expand/collapse
+function toggleOyster(item) {
+  const expanded = item.querySelector('.oyster-expanded');
+  const isOpen = expanded.classList.contains('open');
+  // close all
+  document.querySelectorAll('.oyster-expanded').forEach(e => e.classList.remove('open'));
+  if (!isOpen) expanded.classList.add('open');
+}
+</script>
+
 </body>
 </html>
